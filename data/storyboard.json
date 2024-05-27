@@ -1,0 +1,40 @@
+{
+  "chapters": [
+    {
+      "id": 1,
+      "videos": ["videos/1.mp4", "videos/2.mp4"],
+
+      "autoplay": false,
+      "activeButtons": [5, 6],
+      "side": "left",
+      "videoMapping": {
+        "5": 1,
+        "6": 0
+      }
+    },
+    {
+      "id": 2,
+      "videos": ["videos/8.mp4", "videos/4.mp4"],
+
+      "autoplay": true,
+      "activeButtons": [1, 2, 3],
+      "side": "left",
+      "videoMapping": {
+        "3": 1,
+        "4": 0
+      }
+    },
+    {
+      "id": 3,
+      "videos": ["videos/5.mp4", "videos/7.mp4"],
+
+      "autoplay": true,
+      "activeButtons": [1, 2, 3],
+      "side": "right",
+      "videoMapping": {
+        "5": 1,
+        "6": 0
+      }
+    }
+  ]
+}
