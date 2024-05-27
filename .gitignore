@@ -1,2 +1,17 @@
 # Ignore the data/videos directory and all its contents
 data/videos/
+
+# Ignore the exports directory and all its contents
+exports/
+
+
+.DS_Store
+applet
+application.linux-arm64
+application.linux-armv6hf
+application.linux32
+application.linux64
+application.windows32
+application.windows64
+application.macosx
+out
