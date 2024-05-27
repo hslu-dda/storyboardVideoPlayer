@@ -2,38 +2,45 @@
   "chapters": [
     {
       "id": 1,
-      "videos": ["videos/1.mp4", "videos/2.mp4"],
-
-      "autoplay": false,
-      "activeButtons": [5, 6],
-      "side": "left",
+      "videosForeground": [],
+      "videosBackground": ["videos/01 Intro.mp4"],
+      "autoplay": true,
+      "activeButtons": [],
+      "position": "background",
+      "stillimage": "stillimage.png",
       "videoMapping": {
-        "5": 1,
-        "6": 0
+        "1": 0,
+        "2": 1
       }
     },
     {
       "id": 2,
-      "videos": ["videos/8.mp4", "videos/4.mp4"],
-
-      "autoplay": true,
-      "activeButtons": [1, 2, 3],
-      "side": "left",
+      "videosForeground": [
+        "videos/03.1 Geschichte Davy - Mutter (Audio).mp4",
+        "videos/4.mp4"
+      ],
+      "videosBackground": [],
+      "autoplay": false,
+      "activeButtons": [3.4],
+      "position": "foreground",
+      "stillimage": "stillimage.png",
       "videoMapping": {
-        "3": 1,
-        "4": 0
+        "3": 0,
+        "4": 1
       }
     },
     {
       "id": 3,
-      "videos": ["videos/5.mp4", "videos/7.mp4"],
-
-      "autoplay": true,
-      "activeButtons": [1, 2, 3],
-      "side": "right",
+      "videosForeground": ["videos/5.mp4", "videos/7.mp4", "videos/4.mp4"],
+      "videosBackground": ["videos/2.mp4"],
+      "autoplay": false,
+      "activeButtons": [5, 6, 7],
+      "position": "foreground",
+      "stillimage": "stillimage.png",
       "videoMapping": {
-        "5": 1,
-        "6": 0
+        "5": 0,
+        "6": 1,
+        "7": 2
       }
     }
   ]
