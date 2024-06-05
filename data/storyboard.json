@@ -4,43 +4,47 @@
       "id": 1,
       "videosForeground": [],
       "videosBackground": ["videos/01 Intro.mp4"],
-      "autoplay": true,
+      "mode": "next",
       "activeButtons": [],
       "position": "background",
       "stillimage": "stillimage.png",
-      "videoMapping": {
-        "1": 0,
-        "2": 1
-      }
+      "videoMapping": {}
     },
     {
       "id": 2,
       "videosForeground": [
+        "videos/03 Geschichte Davy (Audio).mp4",
         "videos/03.1 Geschichte Davy - Mutter (Audio).mp4",
-        "videos/4.mp4"
+        "videos/03.2 Geschichte Davy - Bruder (Audio).mp4",
+        "videos/03.3 Geschichte Davy - Schwestern (Audio).mp4"
       ],
       "videosBackground": [],
-      "autoplay": false,
-      "activeButtons": [3.4],
+      "mode": "restart",
+      "activeButtons": [1, 2],
       "position": "foreground",
       "stillimage": "stillimage.png",
       "videoMapping": {
-        "3": 0,
-        "4": 1
+        "1": 1,
+        "2": 2,
+        "3": 3
       }
     },
     {
       "id": 3,
-      "videosForeground": ["videos/5.mp4", "videos/7.mp4", "videos/4.mp4"],
+      "videosForeground": [
+        "videos/example.mp4",
+        "videos/2.mp4",
+        "videos/1_kurz.mp4"
+      ],
       "videosBackground": ["videos/2.mp4"],
-      "autoplay": false,
-      "activeButtons": [5, 6, 7],
+      "mode": "stop",
+      "activeButtons": [3, 4],
       "position": "foreground",
       "stillimage": "stillimage.png",
       "videoMapping": {
-        "5": 0,
-        "6": 1,
-        "7": 2
+        "3": 0,
+        "4": 1,
+        "5": 2
       }
     }
   ]

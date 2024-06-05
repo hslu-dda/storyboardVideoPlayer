@@ -54,7 +54,8 @@ void setup() {
       videosBackground[j] = jsonVideosBackground.getString(j);
     }
 
-    boolean autoplay = jsonChapter.getBoolean("autoplay");
+        String mode = jsonChapter.getString("mode");
+
 
     JSONArray jsonActiveButtons = jsonChapter.getJSONArray("activeButtons");
     int[] activeButtons = new int[jsonActiveButtons.size()];
@@ -74,7 +75,7 @@ void setup() {
     PImage image=loadImage(imageurl);
 
     // Create a new Chapter instance and add it to the array
-    chapters[i] = new Chapter(id, videosForeground, videosBackground, autoplay, activeButtons, position, videoMapping, image);
+    chapters[i] = new Chapter(id, videosForeground, videosBackground, activeButtons, position, mode,videoMapping, image);
   }
 
   // Display and play the initial chapter
@@ -85,8 +86,6 @@ void setup() {
 void draw() {
   // Clear the background
   background(255);
-
-
 
   // If a video is playing, display it
   if (currentVideo != null) {
@@ -105,44 +104,48 @@ void draw() {
       leftCanvas.image(currentVideo, 0, 0, leftCanvas.width, leftCanvas.height);
       leftCanvas.endDraw();
 
-  if (secondaryVideo != null) {
-      rightCanvas.beginDraw();
-      rightCanvas.image(secondaryVideo, 0, 0, rightCanvas.width, rightCanvas.height);
-      rightCanvas.endDraw();}
+      if (secondaryVideo != null) {
+        rightCanvas.beginDraw();
+        rightCanvas.image(secondaryVideo, 0, 0, rightCanvas.width, rightCanvas.height);
+        rightCanvas.endDraw();
+      }
     } else {
       rightCanvas.beginDraw();
       rightCanvas.background(255);
       rightCanvas.image(currentVideo, 0, 0, rightCanvas.width, rightCanvas.height);
       rightCanvas.endDraw();
-  if (secondaryVideo != null) {
-      leftCanvas.beginDraw();
-      leftCanvas.image(secondaryVideo, 0, 0, leftCanvas.width, leftCanvas.height);
-      leftCanvas.endDraw();}
-    }
-
-    // Check if the video has finished playing
-    if (!currentVideo.isPlaying() && currentVideo.time() >= currentVideo.duration()) {
-      if (currentChapter.autoplay) {
-        nextChapter();
-      } else {
-        // Stop the video and jump to frame x (e.g., frame 0.5 second)
-        /*currentVideo.jump(currentVideo.duration()/2);
-         currentVideo.read();
-         currentVideo.pause();
-         */
-        println("-------- END");
+      if (secondaryVideo != null) {
         leftCanvas.beginDraw();
-        leftCanvas.background(255, 0, 0);
+        leftCanvas.image(secondaryVideo, 0, 0, leftCanvas.width, leftCanvas.height);
         leftCanvas.endDraw();
       }
     }
+    
+    
+      
+    float tolerance = 0.2; // Adjust this value as needed
+    
+
+
+    
+
+    // Check if the video has finished playing
+    if (!currentVideo.isPlaying() && currentVideo.time()  >= (currentVideo.duration() - tolerance)) {
+         println("-------- END",currentChapter.mode);
+  handleChapterMode(currentChapter.mode);
+        
+  
+    }
   }
+  
+  
+  
 
   leftSyphonServer.sendImage(leftCanvas);
   rightSyphonServer.sendImage(rightCanvas);
 
-  image(leftCanvas, 0, 0,leftCanvas.width/2,leftCanvas.height/2);
-  image(rightCanvas, leftCanvas.width/2, 0,rightCanvas.width/2,rightCanvas.height/2);
+  image(leftCanvas, 0, 0, leftCanvas.width/2, leftCanvas.height/2);
+  image(rightCanvas, leftCanvas.width/2, 0, rightCanvas.width/2, rightCanvas.height/2);
 
   // Display the current chapter's videos list
   displayCurrentChapter();
@@ -155,6 +158,15 @@ void nextChapter() {
   displayCurrentChapter();
   playFirstVideo();
 }
+
+
+void reset() {
+  // Increment the current chapter index and wrap around if necessary
+  currentChapterIndex = 0;
+  displayCurrentChapter();
+  playFirstVideo();
+}
+
 
 void displayCurrentChapter() {
   Chapter currentChapter = chapters[currentChapterIndex];
@@ -181,23 +193,76 @@ void displayCurrentChapter() {
   }
 }
 
+void handleChapterMode(String mode) {
+  switch (mode) {
+    case "next":
+      nextChapter();
+      break;
+    case "repeat":
+      repeatVideo();
+      break;
+    case "restart":
+      playVideo(0);
+      break;
+    case "stop":
+      //stopVideo();
+      break;
+    default:
+      println("Unknown mode: " + mode);
+      break;
+  }
+}
+
 void playFirstVideo() {
   playVideo(0);
   playSecondaryVideo(0);
 }
 
+void stopVideo() {
+  if (currentVideo != null) {
+    currentVideo.stop();
+  }
+}
+
+void repeatVideo() {
+  if (currentVideo != null) {
+    currentVideo.jump(0);
+    currentVideo.play();
+  }
+}
+
+
 
 void movieEvent(Movie m) {
   m.read();
+  
+    float tolerance = 0.2; // Adjust this value as needed
+    
+  println(m.isPlaying(),m.time(),m.duration());
+  
+  // Check if the video has finished playing
+  if (!m.isPlaying() && m.time() >= (m.duration() - tolerance)) {
+    if (m == currentVideo) {
+      println("Current video stopped.");
+      Chapter currentChapter = chapters[currentChapterIndex];
+      handleChapterMode(currentChapter.mode);
+    } else if (m == secondaryVideo) {
+      println("Secondary video stopped.");
+    }
+  }
 }
 
 void keyPressed() {
   if (key == 'n' || key == 'N') {
     nextChapter();
-  } else if (Character.isDigit(key)) {
+  }
+  if (Character.isDigit(key)) {
     // Convert the key to an integer and call handleButtonPress
     int buttonId = Character.getNumericValue(key);
     handleButtonPress(buttonId);
+  }
+  if (key=='r') {
+    reset();
   }
 }
 
@@ -214,6 +279,7 @@ void playVideo(int index) {
   if (currentVideo != null) {
     currentVideo.stop();
   }
+  println("Play");
   String videoPath;
   Chapter currentChapter = chapters[currentChapterIndex];
   if (currentChapter.position.equals("foreground")) {
@@ -223,6 +289,7 @@ void playVideo(int index) {
   } else {
     videoPath = currentChapter.videosForeground[index];
   }
+  println("---"+videoPath);
   currentVideo = new Movie(this, videoPath);
 
   // Add a check to see if the video file is loaded successfully
@@ -249,11 +316,11 @@ void playSecondaryVideo(int index) {
     }
   }
 
-if(videoPath!=null){
-  secondaryVideo = new Movie(this, videoPath);
-}else{
-      secondaryVideo=null;
-}
+  if (videoPath!=null) {
+    secondaryVideo = new Movie(this, videoPath);
+  } else {
+    secondaryVideo=null;
+  }
   // Add a check to see if the video file is loaded successfully
   if (secondaryVideo != null) {
     secondaryVideo.play();
